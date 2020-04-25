@@ -30,19 +30,32 @@ const FormatToolbar = () => {
 					)
 				) }
 				<Slot name="RichText.ToolbarControls">
-					{ ( fills ) =>
-						fills.length !== 0 && (
+					{ ( fills ) => {
+						if ( fills.length === 0 ) {
+							return null;
+						}
+
+						const allProps = fills.map(
+							( [ { props } ] ) => props
+						);
+						const hasActive = allProps.some(
+							( { isActive } ) => isActive
+						);
+
+						return (
 							<DropdownMenu
 								icon={ chevronDown }
 								label={ __( 'More rich text controls' ) }
-								controls={ orderBy(
-									fills.map( ( [ { props } ] ) => props ),
-									'title'
-								) }
+								controls={ orderBy( allProps, 'title' ) }
 								popoverProps={ POPOVER_PROPS }
+								toggleProps={
+									hasActive
+										? { className: 'is-pressed' }
+										: undefined
+								}
 							/>
-						)
-					}
+						);
+					} }
 				</Slot>
 			</Toolbar>
 		</div>
